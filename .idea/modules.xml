@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/OfflineSyncEngine_UserFriendly_GitReadygpt.iml" filepath="$PROJECT_DIR$/OfflineSyncEngine_UserFriendly_GitReadygpt.iml" />
+      <module fileurl="file://$PROJECT_DIR$/OfflineSyncEngine.iml" filepath="$PROJECT_DIR$/OfflineSyncEngine.iml" />
     </modules>
   </component>
 </project>

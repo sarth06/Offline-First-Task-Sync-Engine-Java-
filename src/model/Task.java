@@ -53,6 +53,7 @@ public class Task {
     }
 
     public void markSynced() {
+        this.lastUpdated = System.currentTimeMillis();
         this.syncStatus = SyncStatus.SYNCED;
     }
 

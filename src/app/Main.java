@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Main {
-    private static final int MAX_TITLE_DISPLAY_LENGTH = 29;
+    private static final int TITLE_DISPLAY_WIDTH = 29;
 
     private static void printMenu() {
         System.out.println("\n===================================================");
@@ -49,7 +49,7 @@ public class Main {
             hasRows = true;
             System.out.printf("%-38s %-30s %-8d %-8s %-15s%n",
                     t.getId(),
-                    shorten(t.getTitle(), MAX_TITLE_DISPLAY_LENGTH),
+                    shorten(t.getTitle(), TITLE_DISPLAY_WIDTH),
                     t.getVersion(),
                     t.isDeleted(),
                     t.getSyncStatus());

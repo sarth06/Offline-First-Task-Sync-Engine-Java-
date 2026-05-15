@@ -46,7 +46,7 @@ public class FileUtil {
             while ((line = br.readLine()) != null) {
                 try {
                     tasks.add(Task.fromString(line));
-                } catch (IllegalArgumentException ignored) {
+                } catch (IllegalArgumentException e) {
                     System.out.println("Skipped invalid task record: " + line);
                 }
             }

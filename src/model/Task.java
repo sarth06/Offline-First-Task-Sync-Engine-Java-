@@ -53,7 +53,6 @@ public class Task {
     }
 
     public void markSynced() {
-        this.lastUpdated = System.currentTimeMillis();
         this.syncStatus = SyncStatus.SYNCED;
     }
 
@@ -73,7 +72,7 @@ public class Task {
         try {
             parsedTitle = new String(Base64.getDecoder().decode(p[1]), StandardCharsets.UTF_8);
         } catch (IllegalArgumentException e) {
-            System.err.println("Warning: legacy task title format detected for task ID " + p[0] + ".");
+            System.out.println("Warning: legacy task title format detected for task ID " + p[0] + ".");
             parsedTitle = p[1];
         }
 

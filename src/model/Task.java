@@ -1,19 +1,22 @@
 package model;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+
 public class Task {
-    private String id;
+    private final String id;
     private String title;
     private long lastUpdated;
     private int version;
     private boolean deleted;
-    private String syncStatus;
+    private SyncStatus syncStatus;
 
     public Task(String id, String title, int version) {
         this.id = id;
-        this.title = title;
+        this.title = title == null ? "" : title.trim();
         this.version = version;
         this.lastUpdated = System.currentTimeMillis();
-        this.syncStatus = "PENDING";
+        this.syncStatus = SyncStatus.PENDING;
         this.deleted = false;
     }
 
@@ -22,36 +25,61 @@ public class Task {
     public int getVersion() { return version; }
     public long getLastUpdated() { return lastUpdated; }
     public boolean isDeleted() { return deleted; }
-    public String getSyncStatus() { return syncStatus; }
+    public SyncStatus getSyncStatus() { return syncStatus; }
 
     public void updateTitle(String title) {
-        this.title = title;
+        this.title = title == null ? "" : title.trim();
         this.version++;
         this.lastUpdated = System.currentTimeMillis();
-        this.syncStatus = "PENDING";
+        this.syncStatus = SyncStatus.PENDING;
     }
 
     public void markDeleted() {
         this.deleted = true;
         this.version++;
-        this.syncStatus = "PENDING";
+        this.lastUpdated = System.currentTimeMillis();
+        this.syncStatus = SyncStatus.PENDING;
+    }
+
+    public void restore() {
+        this.deleted = false;
+        this.version++;
+        this.lastUpdated = System.currentTimeMillis();
+        this.syncStatus = SyncStatus.PENDING;
+    }
+
+    public void markPending() {
+        this.syncStatus = SyncStatus.PENDING;
     }
 
     public void markSynced() {
-        this.syncStatus = "SYNCED";
+        this.syncStatus = SyncStatus.SYNCED;
     }
 
     @Override
     public String toString() {
-        return id + "|" + title + "|" + version + "|" + lastUpdated + "|" + deleted + "|" + syncStatus;
+        String encodedTitle = Base64.getEncoder().encodeToString(title.getBytes(StandardCharsets.UTF_8));
+        return id + "|" + encodedTitle + "|" + version + "|" + lastUpdated + "|" + deleted + "|" + syncStatus;
     }
 
     public static Task fromString(String line) {
         String[] p = line.split("\\|");
-        Task t = new Task(p[0], p[1], Integer.parseInt(p[2]));
+        if (p.length < 6) {
+            throw new IllegalArgumentException("Invalid task record");
+        }
+
+        String parsedTitle;
+        try {
+            parsedTitle = new String(Base64.getDecoder().decode(p[1]), StandardCharsets.UTF_8);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Warning: legacy task title format detected for task ID " + p[0] + ".");
+            parsedTitle = p[1];
+        }
+
+        Task t = new Task(p[0], parsedTitle, Integer.parseInt(p[2]));
         t.lastUpdated = Long.parseLong(p[3]);
         t.deleted = Boolean.parseBoolean(p[4]);
-        t.syncStatus = p[5];
+        t.syncStatus = SyncStatus.from(p[5]);
         return t;
     }
 }

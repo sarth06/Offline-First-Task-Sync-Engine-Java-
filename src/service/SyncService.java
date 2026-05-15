@@ -1,17 +1,20 @@
 package service;
 
 import model.Task;
+import model.SyncStatus;
 import repository.TaskRepository;
 
 public class SyncService {
 
-    public void sync(TaskRepository repo) {
+    public int sync(TaskRepository repo) {
+        int synced = 0;
         for (Task t : repo.getAll()) {
-            if ("PENDING".equals(t.getSyncStatus())) {
+            if (SyncStatus.PENDING.equals(t.getSyncStatus())) {
                 t.markSynced();
+                synced++;
             }
         }
         repo.save();
-        System.out.println("All pending tasks synced successfully.");
+        return synced;
     }
 }

@@ -22,7 +22,7 @@ public class FileUtil {
                 Files.createDirectories(parent);
             }
         } catch (IOException e) {
-            System.out.println("Error preparing task storage path: " + FILE);
+            System.out.println("Error preparing task storage path: " + FILE + ". Reason: " + e.getMessage());
             return;
         }
 
@@ -47,7 +47,7 @@ public class FileUtil {
                 try {
                     tasks.add(Task.fromString(line));
                 } catch (IllegalArgumentException ignored) {
-                    System.out.println("Skipped invalid task record.");
+                    System.out.println("Skipped invalid task record: " + line);
                 }
             }
         } catch (IOException e) {
